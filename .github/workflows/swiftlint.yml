@@ -2,18 +2,15 @@
 
 name: SwiftLint
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-    paths:
-      - '.swiftlint.yml'
-      - '**/*.swift'
-  
+
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
