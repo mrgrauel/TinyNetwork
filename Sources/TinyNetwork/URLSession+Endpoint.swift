@@ -7,9 +7,10 @@
 
 import Foundation
 import Combine
+import UIKit
 
 public extension URLSession {
-    func dataTask<Resource>(with endpoint: Endpoint<Resource>, completionHandler: @escaping (Swift.Result<Resource, Swift.Error>) -> Void) -> URLSessionDataTask {
+    func dataTask<E: Endpoint>(with endpoint: E, completionHandler: @escaping (Swift.Result<E.Value, Swift.Error>) -> Void) -> URLSessionDataTask {
         dataTask(with: endpoint.urlRequest) { data, _, error in
             do {
                 if let error = error {
@@ -25,9 +26,9 @@ public extension URLSession {
 
 @available(iOS 13, watchOS 6, OSX 10.15, *)
 public extension URLSession {
-    func dataTaskPublisher<Resource>(for endpoint: Endpoint<Resource>) -> AnyPublisher<Resource, Swift.Error> {
+    func dataTaskPublisher<E: Endpoint>(for endpoint: E) -> AnyPublisher<E.Value, Swift.Error> {
         dataTaskPublisher(for: endpoint.urlRequest)
-            .tryMap { data, _ -> Resource in
+            .tryMap { data, _ -> E.Value in
                 try endpoint.parse(data)
             }
             .eraseToAnyPublisher()
