@@ -9,8 +9,8 @@ import Foundation
 import Combine
 
 public extension URLSession {
-    func dataTask<Resource>(with endpoint: Endpoint<Resource>, completionHandler: @escaping (Swift.Result<Resource, Swift.Error>) -> ()) -> URLSessionDataTask {
-        dataTask(with: endpoint.urlRequest) { data, urlResponse, error in
+    func dataTask<Resource>(with endpoint: Endpoint<Resource>, completionHandler: @escaping (Swift.Result<Resource, Swift.Error>) -> Void) -> URLSessionDataTask {
+        dataTask(with: endpoint.urlRequest) { data, _, error in
             do {
                 if let error = error {
                     throw error

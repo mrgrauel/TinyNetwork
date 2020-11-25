@@ -10,11 +10,11 @@ import MockDuck
 import Combine
 @testable import TinyNetwork
 
-class URLSession_EndpointTests: XCTestCase {
-    
+class URLSessionEndpointTests: XCTestCase {
+
     var session: URLSession!
     var cancellables = Set<AnyCancellable>()
-    
+
     override class func setUp() {
         MockDuck.registerRequestHandler { urlRequest -> MockResponse? in
             let components = URLComponents(url: urlRequest.url!, resolvingAgainstBaseURL: false)!
@@ -33,11 +33,11 @@ class URLSession_EndpointTests: XCTestCase {
         }
         MockDuck.shouldFallbackToNetwork = false
     }
-    
+
     override func setUpWithError() throws {
         session = URLSession(configuration: .default)
     }
-    
+
     override class func tearDown() {
         MockDuck.unregisterAllRequestHandlers()
         MockDuck.shouldFallbackToNetwork = true
@@ -50,7 +50,7 @@ class URLSession_EndpointTests: XCTestCase {
         let dataTask = session.dataTask(with: endpoint) { result in
             switch result {
             case .failure:
-                XCTFail()
+                XCTFail("Should complete successfully")
             case let .success(resource):
                 XCTAssertEqual(resource, MockResource.sample)
             }
@@ -59,7 +59,7 @@ class URLSession_EndpointTests: XCTestCase {
         dataTask.resume()
         wait(for: [expectation], timeout: 3)
     }
-    
+
     func testDataTaskResourceError() throws {
         let expectation = XCTestExpectation(description: "testDataTaskResourceError")
 
@@ -76,7 +76,7 @@ class URLSession_EndpointTests: XCTestCase {
         dataTask.resume()
         wait(for: [expectation], timeout: 3)
     }
-    
+
     func testDataTaskResourceInvalidMock() throws {
         let expectation = XCTestExpectation(description: "testDataTaskResourceInvalidMock")
 
@@ -93,33 +93,33 @@ class URLSession_EndpointTests: XCTestCase {
         dataTask.resume()
         wait(for: [expectation], timeout: 3)
     }
-    
+
     func testDataTaskPublisherResource() throws {
         let expectation = XCTestExpectation(description: "dataTaskPublisherResource")
 
         let endpoint = try Endpoint<MockResource>(domain: MockDomain.github, path: "/mock")
         session.dataTaskPublisher(for: endpoint)
-            .sink { completion in
+            .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure:
-                    XCTFail()
+                    XCTFail("Should complete successfully")
                 case .finished:
                     break
                 }
                 expectation.fulfill()
-            } receiveValue: { resource in
+            }, receiveValue: { resource in
                 XCTAssertEqual(resource, MockResource.sample)
-            }
+            })
             .store(in: &cancellables)
         wait(for: [expectation], timeout: 3)
     }
-    
+
     func testDataTaskPublisherResourceError() throws {
         let expectation = XCTestExpectation(description: "testDataTaskPublisherResourceError")
 
         let endpoint = try Endpoint<MockResource>(domain: MockDomain.github, path: "/error")
         session.dataTaskPublisher(for: endpoint)
-            .sink { completion in
+            .sink(receiveCompletion: { completion in
                 switch completion {
                 case let .failure(error):
                     XCTAssert(error is URLError)
@@ -127,19 +127,19 @@ class URLSession_EndpointTests: XCTestCase {
                     XCTFail("The publisher should fail.")
                 }
                 expectation.fulfill()
-            } receiveValue: { resource in
+            }, receiveValue: { resource in
                 XCTFail("the request should fail, but we got \(resource)")
-            }
+            })
             .store(in: &cancellables)
         wait(for: [expectation], timeout: 3)
     }
-    
+
     func testDataTaskPublisherResourceInvalidMock() throws {
         let expectation = XCTestExpectation(description: "testDataTaskPublisherResourceInvalidMock")
 
         let endpoint = try Endpoint<MockResource>(domain: MockDomain.github, path: "/invalidmock")
         session.dataTaskPublisher(for: endpoint)
-            .sink { completion in
+            .sink(receiveCompletion: { completion in
                 switch completion {
                 case let .failure(error):
                     XCTAssert(error is DecodingError)
@@ -147,9 +147,9 @@ class URLSession_EndpointTests: XCTestCase {
                     XCTFail("The publisher should fail.")
                 }
                 expectation.fulfill()
-            } receiveValue: { resource in
+            }, receiveValue: { resource in
                 XCTFail("the request should fail, but we got \(resource)")
-            }
+            })
             .store(in: &cancellables)
         wait(for: [expectation], timeout: 3)
     }
@@ -160,7 +160,7 @@ class URLSession_EndpointTests: XCTestCase {
 private struct MockDomain: Domain {
     var host: String
     var scheme: String
-    
+
     static var github: Self {
         MockDomain(host: "github.com", scheme: "https")
     }
@@ -168,7 +168,7 @@ private struct MockDomain: Domain {
 
 private struct MockResource: Codable, Equatable {
     let name: String
-    
+
     static var sample: Self {
         MockResource(name: "foobar")
     }
@@ -176,7 +176,7 @@ private struct MockResource: Codable, Equatable {
 
 private struct OtherMockResource: Codable {
     let fullname: String
-    
+
     static var sample: Self {
         OtherMockResource(fullname: "barfoo")
     }

@@ -26,7 +26,7 @@ public struct Endpoint<Resource> where Resource: Decodable {
     }
 
     public var httpMethod: HTTPMethod = .get
-    public var httpHeaderFields: [String: String]? = nil
+    public var httpHeaderFields: [String: String]?
 
     public var parse: (Data) throws -> Resource = { data in
         try JSONDecoder().decode(Resource.self, from: data)
