@@ -6,8 +6,13 @@ name: SwiftLint
 on:
   push:
     branches: [ main ]
+    paths:
+       - '.swiftlint.yml'
+       - '**/*.swift'
   pull_request:
-    branches: [ main ]
+    paths:
+       - '.swiftlint.yml'
+       - '**/*.swift'
 
 jobs:
   lint:
