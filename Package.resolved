@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "MockDuck",
+        "repositoryURL": "https://github.com/BuzzFeed/MockDuck",
+        "state": {
+          "branch": "main",
+          "revision": "4729d150c199f6920219c1ea969d54dcd0efe943",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
