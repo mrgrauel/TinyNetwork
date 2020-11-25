@@ -4,14 +4,9 @@ name: SwiftLint
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
-    paths:
-      - '.swiftlint.yml'
-      - '**/*.swift'
   pull_request:
-    branches: [ main ]
     paths:
       - '.swiftlint.yml'
       - '**/*.swift'
