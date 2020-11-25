@@ -50,7 +50,7 @@ class URLSessionEndpointTests: XCTestCase {
         let dataTask = session.dataTask(with: endpoint) { result in
             switch result {
             case .failure:
-                XCTFail()
+                XCTFail("Should complete successfully")
             case let .success(resource):
                 XCTAssertEqual(resource, MockResource.sample)
             }
