@@ -7,7 +7,6 @@
 
 import Foundation
 import Combine
-import UIKit
 
 public extension URLSession {
     func dataTask<E: Endpoint>(with endpoint: E, completionHandler: @escaping (Swift.Result<E.Value, Swift.Error>) -> Void) -> URLSessionDataTask {
