@@ -1,3 +1,3 @@
 # TinyNetwork
 
-A description of this package.
+A  small library to fetch `Decodable` Resources from network.
