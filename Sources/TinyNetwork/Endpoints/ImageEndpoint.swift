@@ -6,7 +6,6 @@
 //
 
 import Foundation
-#if canImport(SwiftUI)
 import SwiftUI
 import UIKit
 
@@ -26,4 +25,3 @@ public struct ImageEndpoint: Endpoint {
         self.urlRequest = URLRequest(url: url)
     }
 }
-#endif
