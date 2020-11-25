@@ -4,8 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    paths:
-      - '**/*.swift'
+    branches: [ main ]
 
 jobs:
   build:
@@ -17,3 +16,13 @@ jobs:
       run: swift build -v
     - name: Run tests
       run: swift test -v
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: SwiftLint
+        uses: norio-nomura/action-swiftlint@3.2.1
