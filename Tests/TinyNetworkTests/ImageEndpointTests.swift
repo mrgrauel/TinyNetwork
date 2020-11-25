@@ -23,7 +23,7 @@ class ImageEndpointTests: XCTestCase {
         let endpoint = ImageEndpoint(url: url)
         let image = try XCTUnwrap(UIImage(systemName: "square.and.pencil"))
         
-        XCTAssertNotNil(try endpoint.parse(image.pngData()!))
+        XCTAssertNotNil(try endpoint.parse(try XCTUnwrap(image.pngData())))
     }
     
     func testParseError() throws {
