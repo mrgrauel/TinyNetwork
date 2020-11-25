@@ -7,12 +7,10 @@ on:
   push:
     branches: [ main ]
   pull_request:
+    branches: [ main ]
     paths:
       - '.swiftlint.yml'
       - '**/*.swift'
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
   
 jobs:
   build:
