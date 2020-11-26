@@ -17,7 +17,6 @@ let endpoint = DecodableEndpoint<Mock>(url: url)
 URLSession.shared.dataTaskPublisher(for: endpoint)
     .sink( receiveCompletion: { completion in
         print(completion)
-        PlaygroundPage.current.finishExecution()
     },
     receiveValue: { value in
         print(value)
