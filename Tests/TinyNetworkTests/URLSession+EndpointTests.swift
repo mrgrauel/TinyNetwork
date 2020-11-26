@@ -12,8 +12,10 @@ import Combine
 
 class URLSessionEndpointTests: XCTestCase {
 
+    var cancellables: Set<AnyCancellable>!
+    
     var session: URLSession!
-    var cancellables = Set<AnyCancellable>()
+    var url: URL!
 
     override class func setUp() {
         MockDuck.registerRequestHandler { urlRequest -> MockResponse? in
@@ -33,9 +35,18 @@ class URLSessionEndpointTests: XCTestCase {
         }
         MockDuck.shouldFallbackToNetwork = false
     }
-
+    
+    override func setUp() {
+        cancellables = Set<AnyCancellable>()
+    }
+    
     override func setUpWithError() throws {
         session = URLSession(configuration: .default)
+        url = try XCTUnwrap(URL(string: "https://github.com/"))
+    }
+    
+    override func tearDown() {
+        cancellables = nil
     }
 
     override class func tearDown() {
@@ -46,7 +57,8 @@ class URLSessionEndpointTests: XCTestCase {
     func testDataTaskResource() throws {
         let expectation = XCTestExpectation(description: "testDataTaskResource")
 
-        let endpoint = try DecodableEndpoint<MockResource>(domain: MockDomain.github, path: "/mock")
+        let url = self.url.appendingPathComponent("mock")
+        let endpoint = DecodableEndpoint<MockResource>(url: url)
         let dataTask = session.dataTask(with: endpoint) { result in
             switch result {
             case .failure:
@@ -63,7 +75,8 @@ class URLSessionEndpointTests: XCTestCase {
     func testDataTaskResourceError() throws {
         let expectation = XCTestExpectation(description: "testDataTaskResourceError")
 
-        let endpoint = try DecodableEndpoint<MockResource>(domain: MockDomain.github, path: "/error")
+        let url = self.url.appendingPathComponent("error")
+        let endpoint = DecodableEndpoint<MockResource>(url: url)
         let dataTask = session.dataTask(with: endpoint) { result in
             switch result {
             case let .failure(error):
@@ -80,7 +93,8 @@ class URLSessionEndpointTests: XCTestCase {
     func testDataTaskResourceInvalidMock() throws {
         let expectation = XCTestExpectation(description: "testDataTaskResourceInvalidMock")
 
-        let endpoint = try DecodableEndpoint<MockResource>(domain: MockDomain.github, path: "/invalidmock")
+        let url = self.url.appendingPathComponent("invalidmock")
+        let endpoint = DecodableEndpoint<MockResource>(url: url)
         let dataTask = session.dataTask(with: endpoint) { result in
             switch result {
             case let .failure(error):
@@ -97,7 +111,8 @@ class URLSessionEndpointTests: XCTestCase {
     func testDataTaskPublisherResource() throws {
         let expectation = XCTestExpectation(description: "dataTaskPublisherResource")
 
-        let endpoint = try DecodableEndpoint<MockResource>(domain: MockDomain.github, path: "/mock")
+        let url = self.url.appendingPathComponent("mock")
+        let endpoint = DecodableEndpoint<MockResource>(url: url)
         session.dataTaskPublisher(for: endpoint)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -117,7 +132,8 @@ class URLSessionEndpointTests: XCTestCase {
     func testDataTaskPublisherResourceError() throws {
         let expectation = XCTestExpectation(description: "testDataTaskPublisherResourceError")
 
-        let endpoint = try DecodableEndpoint<MockResource>(domain: MockDomain.github, path: "/error")
+        let url = self.url.appendingPathComponent("error")
+        let endpoint = DecodableEndpoint<MockResource>(url: url)
         session.dataTaskPublisher(for: endpoint)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -136,8 +152,9 @@ class URLSessionEndpointTests: XCTestCase {
 
     func testDataTaskPublisherResourceInvalidMock() throws {
         let expectation = XCTestExpectation(description: "testDataTaskPublisherResourceInvalidMock")
-
-        let endpoint = try DecodableEndpoint<MockResource>(domain: MockDomain.github, path: "/invalidmock")
+        
+        let url = self.url.appendingPathComponent("invalidmock")
+        let endpoint = DecodableEndpoint<MockResource>(url: url)
         session.dataTaskPublisher(for: endpoint)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -156,15 +173,6 @@ class URLSessionEndpointTests: XCTestCase {
 }
 
 // MARK: - Mocks
-
-private struct MockDomain: Domain {
-    var host: String
-    var scheme: String
-
-    static var github: Self {
-        MockDomain(host: "github.com", scheme: "https")
-    }
-}
 
 private struct MockResource: Codable, Equatable {
     let name: String

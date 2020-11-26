@@ -10,24 +10,24 @@ import XCTest
 
 class UIImageEndpointTests: XCTestCase {
 
-    func testURLRequest() throws {
-        let url = URL(string: "https://www.github.com/image.png")!
-        let endpoint = UIImageEndpoint(url: url)
-        XCTAssertEqual(endpoint.urlRequest.url, url)
-        XCTAssertEqual(endpoint.urlRequest.httpMethod, "GET")
+    var url: URL!
+    var endpoint: UIImageEndpoint!
+    
+    override func setUpWithError() throws {
+        url = try XCTUnwrap(URL(string: "https://www.github.com/image.png"))
+        endpoint = UIImageEndpoint(url: url)
+    }
+
+    func testURL() throws {
+        XCTAssertEqual(endpoint.url, url)
     }
     
     func testParse() throws {
-        let url = URL(string: "https://www.github.com/image.png")!
-        let endpoint = UIImageEndpoint(url: url)
         let image = try XCTUnwrap(UIImage(systemName: "square.and.pencil"))
-        
         XCTAssertNotNil(try endpoint.parse(try XCTUnwrap(image.pngData())))
     }
     
     func testParseError() throws {
-        let url = URL(string: "https://www.github.com/image.png")!
-        let endpoint = UIImageEndpoint(url: url)
         XCTAssertThrowsError(try endpoint.parse(Data()))
     }
 }

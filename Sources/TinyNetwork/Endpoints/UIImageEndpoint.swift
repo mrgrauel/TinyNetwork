@@ -10,7 +10,7 @@ import UIKit
 
 public struct UIImageEndpoint: Endpoint {
     public typealias Value = UIImage
-    public let urlRequest: URLRequest
+    public let url: URL
     
     public let parse: (Data) throws -> Value = { data in
         guard let image = UIImage(data: data) else {
@@ -20,6 +20,6 @@ public struct UIImageEndpoint: Endpoint {
     }
     
     public init(url: URL) {
-        self.urlRequest = URLRequest(url: url)
+        self.url = url
     }
 }
