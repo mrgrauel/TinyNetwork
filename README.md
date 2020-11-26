@@ -1,6 +1,18 @@
 # TinyNetwork
 
-A  tiny network library to fetch `Decodable` Resources or Images.
+![badge-mit][] ![badge-languages][] ![badge-pms][] ![badge-platforms][]
+
+A tiny network library to fetch `Decodable` Resources or Images.
+
+### Getting Started
+
+We only support [Swift Package Manager](https://swift.org/package-manager/)
+
+#### Swift Package Manager
+
+```swift
+.package(url: "https://github.com/mrgrauel/TinyNetwork.git", from: "1.0.0")
+```
 
 ### Example
 
@@ -23,3 +35,8 @@ URLSession.shared.dataTaskPublisher(for: endpoint)
     })
     .store(in: &cancellable)
 ```
+
+[badge-pms]: https://img.shields.io/badge/supports-SwiftPM-green.svg
+[badge-languages]: https://img.shields.io/badge/languages-Swift-orange.svg
+[badge-platforms]: https://img.shields.io/badge/platforms-iOS%20%7C%20watchOS-lightgrey.svg
+[badge-mit]: https://img.shields.io/badge/license-MIT-blue.svg
