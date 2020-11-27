@@ -10,10 +10,10 @@ import XCTest
 
 class DecodableEndpointTests: XCTestCase {
     typealias Endpoint = DecodableEndpoint<MockResource>
-    
+
     var url: URL!
     var endpoint: Endpoint!
-    
+
     override func setUpWithError() throws {
         url = try XCTUnwrap(URL(string: "https://www.github.com"))
         endpoint = Endpoint(url: url)
@@ -22,7 +22,7 @@ class DecodableEndpointTests: XCTestCase {
     func testURL() throws {
         XCTAssertEqual(endpoint.urlRequest.url, url)
     }
-    
+
     func testURLRequest() throws {
         let urlRequest = URLRequest(url: url)
         let endpoint = Endpoint(urlRequest: urlRequest)
@@ -34,12 +34,10 @@ class DecodableEndpointTests: XCTestCase {
         let data = try JSONEncoder().encode(resource)
         XCTAssertEqual(try endpoint.parse(data), resource)
     }
-    
+
     // MARK: Mocks
-    
+
     struct MockResource: Codable, Equatable {
         let name: String
     }
 }
-
-
