@@ -170,22 +170,22 @@ class URLSessionEndpointTests: XCTestCase {
             .store(in: &cancellables)
         wait(for: [expectation], timeout: 3)
     }
-}
+    
+    // MARK: - Mocks
 
-// MARK: - Mocks
+    struct MockResource: Codable, Equatable {
+        let name: String
 
-private struct MockResource: Codable, Equatable {
-    let name: String
-
-    static var sample: Self {
-        MockResource(name: "foobar")
+        static var sample: Self {
+            MockResource(name: "foobar")
+        }
     }
-}
 
-private struct OtherMockResource: Codable {
-    let fullname: String
+    struct OtherMockResource: Codable {
+        let fullname: String
 
-    static var sample: Self {
-        OtherMockResource(fullname: "barfoo")
+        static var sample: Self {
+            OtherMockResource(fullname: "barfoo")
+        }
     }
 }

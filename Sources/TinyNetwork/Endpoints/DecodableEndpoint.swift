@@ -10,13 +10,17 @@ import Foundation
 public struct DecodableEndpoint<Resource>: Endpoint where Resource: Decodable {
     public typealias Value = Resource
 
-    public let url: URL
+    public let urlRequest: URLRequest
 
     public var parse: (Data) throws -> Value = { data in
         try JSONDecoder().decode(Resource.self, from: data)
     }
 
     public init(url: URL) {
-        self.url = url
+        self.urlRequest = URLRequest(url: url)
+    }
+    
+    public init(urlRequest: URLRequest) {
+        self.urlRequest = urlRequest
     }
 }
