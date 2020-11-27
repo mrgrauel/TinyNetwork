@@ -10,8 +10,6 @@ import Foundation
 public protocol Endpoint {
     associatedtype Value
     
-    var url: URL { get }
+    var urlRequest: URLRequest { get }
     var parse: (Data) throws -> Value { get }
-    
-    init(url: URL)
 }

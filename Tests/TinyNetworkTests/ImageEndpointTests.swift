@@ -10,17 +10,24 @@ import SwiftUI
 @testable import TinyNetwork
 
 class ImageEndpointTests: XCTestCase {
+    typealias Endpoint = ImageEndpoint
     
     var url: URL!
-    var endpoint: ImageEndpoint!
+    var endpoint: Endpoint!
     
     override func setUpWithError() throws {
         url = try XCTUnwrap(URL(string: "https://www.github.com/image.png"))
-        endpoint = ImageEndpoint(url: url)
+        endpoint = Endpoint(url: url)
     }
 
     func testURL() throws {
-        XCTAssertEqual(endpoint.url, url)
+        XCTAssertEqual(endpoint.urlRequest.url, url)
+    }
+    
+    func testURLRequest() throws {
+        let urlRequest = URLRequest(url: url)
+        let endpoint = Endpoint(urlRequest: urlRequest)
+        XCTAssertEqual(endpoint.urlRequest, urlRequest)
     }
     
     func testParse() throws {
