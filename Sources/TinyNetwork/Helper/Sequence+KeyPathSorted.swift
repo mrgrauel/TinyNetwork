@@ -11,8 +11,7 @@ extension Sequence {
     func sorted<Value>(
         by keyPath: KeyPath<Self.Element, Value>,
         using valuesAreInIncreasingOrder: (Value, Value) throws -> Bool
-    ) rethrows -> [Self.Element]
-    {
+    ) rethrows -> [Self.Element] {
         return try self.sorted(by: {
             try valuesAreInIncreasingOrder($0[keyPath: keyPath], $1[keyPath: keyPath])
         })
