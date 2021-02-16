@@ -7,11 +7,12 @@
 
 import Foundation
 
-public struct Endpoint<Response> {
+public struct Request<Response> {
     let url: URL
     let method: HttpMethod
     
-    var headers: [String: String]?
+    var headerFields: [String: String]?
+    var cachePolicy: URLRequest.CachePolicy?
 
     public init(url: URL, method: HttpMethod) {
         self.url = url
@@ -19,7 +20,7 @@ public struct Endpoint<Response> {
     }
 }
 
-public extension Endpoint {
+public extension Request {
     var urlRequest: URLRequest {
         var request = URLRequest(url: url)
 
@@ -28,7 +29,7 @@ public extension Endpoint {
             request.httpBody = data
         case .get(let queryItems):
             var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-            components?.queryItems = queryItems
+            components?.queryItems = queryItems?.sorted(by: \.name)
             guard let url = components?.url else {
                 preconditionFailure("Couldn't create a url from components...")
             }
@@ -37,8 +38,9 @@ public extension Endpoint {
             break
         }
 
-        request.allHTTPHeaderFields = headers
+        request.allHTTPHeaderFields = headerFields
         request.httpMethod = method.name
+        request.cachePolicy = cachePolicy ?? .useProtocolCachePolicy
         return request
     }
 }

@@ -1,5 +1,5 @@
 //
-//  URLSession+Endpoint.swift
+//  URLSession+Request.swift
 //  TinyNetwork
 //
 //  Created by Andreas Osberghaus on 25.11.20.
@@ -15,7 +15,7 @@ public extension URLSession {
     }
 
     @available(iOS 13, watchOS 6, OSX 10.15, *)
-    func publisher(for endpoint: Endpoint<Data>) -> AnyPublisher<Data, Swift.Error> {
+    func publisher(for endpoint: Request<Data>) -> AnyPublisher<Data, Swift.Error> {
         dataTaskPublisher(for: endpoint.urlRequest)
             .mapError(Error.networking)
             .map(\.data)
@@ -24,7 +24,7 @@ public extension URLSession {
 
     @available(iOS 13, watchOS 6, OSX 10.15, *)
     func publisher<Response: Decodable>(
-        for endpoint: Endpoint<Response>,
+        for endpoint: Request<Response>,
         using decoder: JSONDecoder = .init()
     ) -> AnyPublisher<Response, Swift.Error> {
         dataTaskPublisher(for: endpoint.urlRequest)
@@ -38,7 +38,7 @@ public extension URLSession {
 
 public extension URLSession {
     func dataTask(
-        for endpoint: Endpoint<Data>,
+        for endpoint: Request<Data>,
         completionHandler: @escaping (Swift.Result<Data, Swift.Error>) -> Void
     ) -> URLSessionDataTask {
         dataTask(with: endpoint.urlRequest) { data, _, error in
@@ -54,7 +54,7 @@ public extension URLSession {
     }
 
     func dataTask<Response: Decodable>(
-        for endpoint: Endpoint<Response>,
+        for endpoint: Request<Response>,
         using decoder: JSONDecoder = .init(),
         completionHandler: @escaping (Swift.Result<Response, Swift.Error>) -> Void
     ) -> URLSessionDataTask {

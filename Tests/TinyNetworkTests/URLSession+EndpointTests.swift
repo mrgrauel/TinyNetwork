@@ -59,7 +59,7 @@ class URLSessionEndpointTests: XCTestCase {
         let expectation = XCTestExpectation(description: "testDataTaskResource")
 
         let url = self.url.appendingPathComponent("mock")
-        let endpoint = Endpoint<MockResource>(url: url, method: .get(nil))
+        let endpoint = Request<MockResource>(url: url, method: .get(nil))
         let dataTask = session.dataTask(for: endpoint) { result in
             switch result {
             case .failure:
@@ -77,7 +77,7 @@ class URLSessionEndpointTests: XCTestCase {
         let expectation = XCTestExpectation(description: "testDataTaskResourceError")
 
         let url = self.url.appendingPathComponent("error")
-        let endpoint = Endpoint<MockResource>(url: url, method: .get(nil))
+        let endpoint = Request<MockResource>(url: url, method: .get(nil))
         let dataTask = session.dataTask(for: endpoint) { result in
             switch result {
             case let .failure(error):
@@ -95,7 +95,7 @@ class URLSessionEndpointTests: XCTestCase {
         let expectation = XCTestExpectation(description: "testDataTaskResourceInvalidMock")
 
         let url = self.url.appendingPathComponent("invalidmock")
-        let endpoint = Endpoint<MockResource>(url: url, method: .get(nil))
+        let endpoint = Request<MockResource>(url: url, method: .get(nil))
         let dataTask = session.dataTask(for: endpoint) { result in
             switch result {
             case let .failure(error):
@@ -113,7 +113,7 @@ class URLSessionEndpointTests: XCTestCase {
         let expectation = XCTestExpectation(description: "dataTaskPublisherResource")
 
         let url = self.url.appendingPathComponent("mock")
-        let endpoint = Endpoint<MockResource>(url: url, method: .get(nil))
+        let endpoint = Request<MockResource>(url: url, method: .get(nil))
         session.publisher(for: endpoint)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -134,7 +134,7 @@ class URLSessionEndpointTests: XCTestCase {
         let expectation = XCTestExpectation(description: "testDataTaskPublisherResourceError")
 
         let url = self.url.appendingPathComponent("error")
-        let endpoint = Endpoint<MockResource>(url: url, method: .get(nil))
+        let endpoint = Request<MockResource>(url: url, method: .get(nil))
         session.publisher(for: endpoint)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -155,7 +155,7 @@ class URLSessionEndpointTests: XCTestCase {
         let expectation = XCTestExpectation(description: "testDataTaskPublisherResourceInvalidMock")
         
         let url = self.url.appendingPathComponent("invalidmock")
-        let endpoint = Endpoint<MockResource>(url: url, method: .get(nil))
+        let endpoint = Request<MockResource>(url: url, method: .get(nil))
         session.publisher(for: endpoint)
             .sink(receiveCompletion: { completion in
                 switch completion {
