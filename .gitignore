@@ -67,4 +67,7 @@ build/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 
+# Ruby Gem
+/vendor/bundle
+
 # End of https://www.toptal.com/developers/gitignore/api/swiftpackagemanager,fastlane,xcode
