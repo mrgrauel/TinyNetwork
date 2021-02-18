@@ -26,9 +26,15 @@ public struct Mock: Decodable {
 }
 
 let url = URL(string: "https://test.com/mock")!
-let endpoint = DecodableEndpoint<Mock>(url: url)
+let endpoint = Request<MockResource>(
+    url: url,
+    method: .get([
+        .init(name: "foobar", value: "1"),
+        .init(name: "barfoo", value: "2")
+    ])
+)
 
-URLSession.shared.dataTaskPublisher(for: endpoint)
+URLSession.shared.publisher(for: endpoint)
     .sink( receiveCompletion: { completion in
         print(completion)
     },
