@@ -1,21 +1,16 @@
-name: Swift
+name: Danger
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
 jobs:
-  test:
+  danger:
     runs-on: macos-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-
-    - name: Generate Xcode Project
-      run: swift package generate-xcodeproj
 
     - name: Cache RubyGems
       uses: actions/cache@v2
@@ -26,6 +21,8 @@ jobs:
 
     - name: Bundle Install
       run: bundle install
-
-    - name: Build and Test
-      run: bundle exec fastlane tests
+    
+    - name: Danger
+      env:
+        DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
+      run: bundle exec danger
