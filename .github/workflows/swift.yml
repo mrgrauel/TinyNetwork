@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+env:
+  MINT_PATH: ${{ github.workspace }}/mint
 
 jobs:
   test:
@@ -13,21 +15,42 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
     - name: Generate Xcode Project
       run: swift package generate-xcodeproj
+
+    - name: Cache RubyGems
+      uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: ${{ runner.os }}-gem-
+
     - name: Bundle Install
       run: bundle install
+
     - name: Build and Test
       run: bundle exec fastlane tests
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: SwiftLint
-        uses: norio-nomura/action-swiftlint@3.2.1
+      - name: Cache mint packages
+        uses: actions/cache@v2
         with:
-          args: --strict
+          path: ${{ env.MINT_PATH }}
+          key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
+          restore-keys: ${{ runner.os }}-mint-
+
+      - name: Install mint
+        run: brew install mint
+
+      - name: Mint bootstrap
+        run: mint bootstrap
+
+      - name: Run swiftlint
+        run: mint run swiftlint
