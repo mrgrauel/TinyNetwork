@@ -34,13 +34,15 @@ let request = Request<MockResource>(
     ])
 )
 
-URLSession.shared.publisher(for: request)
-    .sink( receiveCompletion: { completion in
-        print(completion)
-    },
-    receiveValue: { value in
-        print(value)
-    })
+URLSession.shared.dataTaskPublisher(for: url)
+    .sink(
+        receiveCompletion: { completion in
+            print(completion)
+        },
+        receiveValue: { value in
+            print(value)
+        }
+    )
     .store(in: &cancellable)
 ```
 
