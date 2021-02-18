@@ -15,8 +15,8 @@ public extension URLSession {
     }
 
     @available(iOS 13, watchOS 6, OSX 10.15, *)
-    func publisher(for endpoint: Request<Data>) -> AnyPublisher<Data, Swift.Error> {
-        dataTaskPublisher(for: endpoint.urlRequest)
+    func publisher(for request: Request<Data>) -> AnyPublisher<Data, Swift.Error> {
+        dataTaskPublisher(for: request.urlRequest)
             .mapError(Error.networking)
             .map(\.data)
             .eraseToAnyPublisher()
@@ -24,10 +24,10 @@ public extension URLSession {
 
     @available(iOS 13, watchOS 6, OSX 10.15, *)
     func publisher<Response: Decodable>(
-        for endpoint: Request<Response>,
+        for request: Request<Response>,
         using decoder: JSONDecoder = .init()
     ) -> AnyPublisher<Response, Swift.Error> {
-        dataTaskPublisher(for: endpoint.urlRequest)
+        dataTaskPublisher(for: request.urlRequest)
             .mapError(Error.networking)
             .map(\.data)
             .decode(type: Response.self, decoder: decoder)
@@ -38,10 +38,10 @@ public extension URLSession {
 
 public extension URLSession {
     func dataTask(
-        for endpoint: Request<Data>,
+        for request: Request<Data>,
         completionHandler: @escaping (Swift.Result<Data, Swift.Error>) -> Void
     ) -> URLSessionDataTask {
-        dataTask(with: endpoint.urlRequest) { data, _, error in
+        dataTask(with: request.urlRequest) { data, _, error in
             do {
                 if let error = error {
                     throw error
@@ -54,11 +54,11 @@ public extension URLSession {
     }
 
     func dataTask<Response: Decodable>(
-        for endpoint: Request<Response>,
+        for request: Request<Response>,
         using decoder: JSONDecoder = .init(),
         completionHandler: @escaping (Swift.Result<Response, Swift.Error>) -> Void
     ) -> URLSessionDataTask {
-        dataTask(with: endpoint.urlRequest) { data, _, error in
+        dataTask(with: request.urlRequest) { data, _, error in
             do {
                 if let error = error {
                     throw error
