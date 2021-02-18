@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+env:
+  MINT_PATH: ${{ github.workspace }}/mint
 
 jobs:
   test:
@@ -30,24 +32,25 @@ jobs:
     - name: Build and Test
       run: bundle exec fastlane tests
 
-  danger:
+  lint:
     runs-on: macos-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Cache RubyGems
-      uses: actions/cache@v2
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: ${{ runner.os }}-gem-
+      - name: Cache mint packages
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.MINT_PATH }}
+          key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
+          restore-keys: ${{ runner.os }}-mint-
 
-    - name: Bundle Install
-      run: bundle install
-    
-    - name: Danger
-      env:
-        DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
-      run: bundle exec danger
+      - name: Install mint
+        run: brew install mint
+
+      - name: Mint bootstrap
+        run: mint bootstrap
+
+      - name: Run swiftlint
+        run: mint run swiftlint
