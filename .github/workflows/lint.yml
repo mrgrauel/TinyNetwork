@@ -1,0 +1,33 @@
+name: Lint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+env:
+  MINT_PATH: ${{ github.workspace }}/mint
+
+jobs:
+  test:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Cache mint packages
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.MINT_PATH }}
+        key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
+        restore-keys: ${{ runner.os }}-mint-
+
+    - name: Homebrew
+      run: brew install mint
+
+    - name: Bootstrap
+      run: mint bootstrap
+
+    - name: SwiftLint
+      run: mint run swiftlint
