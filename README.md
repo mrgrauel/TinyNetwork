@@ -34,7 +34,7 @@ let request = Request<MockResource>(
     ])
 )
 
-URLSession.shared.dataTaskPublisher(for: url)
+URLSession.shared.dataTaskPublisher(for: request)
     .sink(
         receiveCompletion: { completion in
             print(completion)
