@@ -1,5 +1,5 @@
 //
-//  Endpoint.swift
+//  Request.swift
 //  TinyNetwork
 //
 //  Created by Andreas Osberghaus on 25.11.20.
@@ -11,8 +11,8 @@ public struct Request<Response> {
     let url: URL
     let method: HttpMethod
     
-    var headerFields: [String: String]?
-    var cachePolicy: URLRequest.CachePolicy?
+    public var headerFields: [String: String]?
+    public var cachePolicy: URLRequest.CachePolicy?
 
     public init(url: URL, method: HttpMethod) {
         self.url = url
